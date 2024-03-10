@@ -1,4 +1,5 @@
 from api import TreeNode, API
+from geocoders.custom_stack import CustomStack
 from geocoders.geocoder import Geocoder
 
 
@@ -10,16 +11,29 @@ class MemorizedTreeGeocoder(Geocoder):
             self.__data = API.get_areas()
         else:
             self.__data = data
-
-    """
-        TODO:
-        Сделать функцию перебора дерева:
-        - Для каждого узла сохранять в словарь адресов
-    """
+        self.countries_dict = {}
+        self.path = []
+    
+    def write_data(self):
+        
+        for i in range(len(self.__data)):
+            self.write_nodes_path(self.__data[i])
+    
+    def write_nodes_path(self, treeNode: TreeNode):
+        self.path.append(treeNode.name)
+        for i in range(len(treeNode.areas)):
+            if treeNode.areas[i].areas is not None:
+                self.write_nodes_path(treeNode.areas[i])
+            else:
+                self.path.append(treeNode.areas[i].name)
+                self.countries_dict[treeNode.areas[i].id] = f'"{", ".join(self.path)}"'
+                self.path.remove(treeNode.areas[i].name)
+        self.countries_dict[treeNode.id] = f'"{", ".join(self.path)}"'
+        self.path.remove(treeNode.name)
+        
 
     def _apply_geocoding(self, area_id: str) -> str:
-        """
-            TODO:
-            - Возвращать данные из словаря с адресами
-        """
-        raise NotImplementedError()
+        
+        self.write_data()
+        
+        return f"{area_id},"+self.countries_dict[str(area_id)]

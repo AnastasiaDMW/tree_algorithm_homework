@@ -31,7 +31,7 @@ def main():
         SimpleTreeGeocoder(samples=10000, data=areas_data),
         # SimpleTreeGeocoder(data=areas_data),
         MemorizedTreeGeocoder(samples=10000, data=areas_data),
-        MemorizedTreeGeocoder(data=areas_data),
+        # MemorizedTreeGeocoder(data=areas_data),
     ]
 
     for geocoder in geocoder_list:
