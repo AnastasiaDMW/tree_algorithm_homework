@@ -13,6 +13,7 @@ class MemorizedTreeGeocoder(Geocoder):
             self.__data = data
         self.countries_dict = {}
         self.path = []
+        self.write_data()
     
     def write_data(self):
         
@@ -33,7 +34,5 @@ class MemorizedTreeGeocoder(Geocoder):
         
 
     def _apply_geocoding(self, area_id: str) -> str:
-        
-        self.write_data()
         
         return f"{area_id},"+self.countries_dict[str(area_id)]
